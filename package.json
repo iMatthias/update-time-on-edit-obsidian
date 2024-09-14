@@ -8,7 +8,8 @@
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "version": "node version-bump.mjs && git add manifest.json versions.json",
     "format:write": "prettier --write \"**/*.{ts,json}\"",
-    "format:check": "prettier --list-different \"**/*.{ts,json}\""
+    "format:check": "prettier --list-different \"**/*.{ts,json}\"",
+    "obsidian": "npm run build && cp dist/* .."
   },
   "keywords": [],
   "author": "@beaussan",
@@ -41,6 +42,7 @@
     "@popperjs/core": "2.10.2",
     "date-fns": "2.21.1",
     "js-sha256": "^0.10.1",
+    "obsidian-update-time-on-edit": "file:",
     "rxjs": "6.6.7"
   },
   "husky": {

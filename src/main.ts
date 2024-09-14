@@ -164,6 +164,8 @@ export default class UpdateTimeOnSavePlugin extends Plugin {
   ): Promise<
     { status: 'ok' } | { status: 'error'; error: any } | { status: 'ignored' }
   > {
+    this.log('[update time] handleFileChange()');
+
     if (!isTFile(file)) {
       return { status: 'ignored' };
     }
@@ -196,6 +198,17 @@ export default class UpdateTimeOnSavePlugin extends Plugin {
           }
 
           const currentMTimeOnFile = this.parseDate(frontmatter[updatedKey]);
+
+          // when syncing with git, update updatedTime only if it's newer date
+          // Note on Date comparison : today > yesterday == true
+          const frontmatterTime = currentMTimeOnFile; // current value
+          const systemTime = mTime; // new value
+          const skipBecauseFrontmatterIsNewer = frontmatterTime ? systemTime > frontmatterTime : false;
+
+          if (skipBecauseFrontmatterIsNewer) {
+            this.log('Skipping updateKey because skipBecauseFrontmatterIsNewer');
+            return;
+          }
 
           if (!frontmatter[updatedKey] || !currentMTimeOnFile) {
             this.log('Update updatedKey');
@@ -271,9 +284,9 @@ ${e.message}`;
   }
 
   log(...data: any[]) {
-    if (!__DEV_MODE__) {
-      return;
-    }
+    // if (!__DEV_MODE__) {
+    //   return;
+    // }
     console.log('[UTOE]:', ...data);
   }
 
